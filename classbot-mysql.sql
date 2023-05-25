@@ -1,3 +1,12 @@
+/*
+ * @Author: Melodyknit 2711402357@qq.com
+ * @Date: 2023-05-25 13:50:37
+ * @LastEditors: Melodyknit 2711402357@qq.com
+ * @LastEditTime: 2023-05-25 16:35:23
+ * @FilePath: classbot-mysql.sql
+ * @Description: MySQL表结构
+ */
+
 -- Active: 1683853788210@@127.0.0.1@3306@classbot
 
 CREATE DATABASE
@@ -37,6 +46,8 @@ CREATE TABLE
         FOREIGN KEY (college) REFERENCES college(id)
     ) COMMENT '专业表';
 
+-- 班级表
+
 CREATE TABLE
     IF NOT EXISTS class_table (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '班级id',
@@ -47,6 +58,8 @@ CREATE TABLE
         FOREIGN KEY (teacher) REFERENCES teacher(id),
         FOREIGN KEY (major) REFERENCES major(id)
     ) COMMENT '班级表';
+
+-- 学生表
 
 CREATE TABLE
     IF NOT EXISTS student (
@@ -71,6 +84,8 @@ CREATE TABLE
         FOREIGN KEY (class_table) REFERENCES class_table(id)
     ) COMMENT '学生表';
 
+-- 德育日志
+
 CREATE TABLE
     IF NOT EXISTS moral_education (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '德育日志id',
@@ -85,6 +100,8 @@ CREATE TABLE
         FOREIGN KEY (qq) REFERENCES student(qq)
     ) COMMENT "德育日志";
 
+-- 班级任务
+
 CREATE TABLE
     IF NOT EXISTS class_tasks (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '任务id',
@@ -97,6 +114,8 @@ CREATE TABLE
         FOREIGN KEY (class_table) REFERENCES class_table(id)
     ) COMMENT '班级任务表';
 
+-- 任务文件
+
 CREATE TABLE
     IF NOT EXISTS task_files (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '文件id',
@@ -107,6 +126,8 @@ CREATE TABLE
         FOREIGN KEY (class_tasks) REFERENCES class_tasks(id),
         FOREIGN KEY (student) REFERENCES student(qq)
     ) COMMENT '任务文件表';
+
+-- 班费表
 
 CREATE TABLE
     IF NOT EXISTS class_funds (
