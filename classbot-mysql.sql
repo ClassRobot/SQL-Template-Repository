@@ -131,6 +131,7 @@ CREATE TABLE
 
 CREATE TABLE
     IF NOT EXISTS class_funds (
+        id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '班费id',
         class_table INT NOT NULL COMMENT '班级id',
         description TEXT NOT NULL COMMENT '费用所花费在某件事情',
         money DOUBLE NOT NULL COMMENT '花费金额',
