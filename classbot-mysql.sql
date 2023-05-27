@@ -138,3 +138,25 @@ CREATE TABLE
         creator VARCHAR(100) NOT NULL COMMENT '费用记录人',
         FOREIGN KEY (class_table) REFERENCES class_table(id)
     ) COMMENT '班费表';
+
+-- 学生会
+
+CREATE TABLE
+    IF NOT EXISTS student_council (
+        id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '学生会id',
+        student BIGINT NOT NULL COMMENT '学生qq',
+        department VARCHAR(50) NOT NULL COMMENT '学生会部门',
+        position VARCHAR(50) NOT NULL COMMENT '学生会职位',
+        FOREIGN KEY (student) REFERENCES student(qq)
+    ) COMMENT '学生会表';
+
+-- 反馈表
+
+CREATE TABLE
+    IF NOT EXISTS feedback (
+        id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '反馈id',
+        qq BIGINT NOT NULL COMMENT '反馈人qq',
+        content TEXT NOT NULL COMMENT '反馈内容',
+        image_md5 VARCHAR(255) NULL COMMENT '反馈图片',
+        create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '反馈时间'
+    ) COMMENT '反馈表';
