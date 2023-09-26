@@ -161,3 +161,19 @@ CREATE TABLE
         image_md5 VARCHAR(255) NULL COMMENT '反馈图片',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '反馈时间'
     ) COMMENT '反馈表';
+
+
+-- 通知表
+
+CREATE TABLE
+    IF NOT EXISTS notice (
+        id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '通知id',
+        class_table INT NOT NULL COMMENT '班级id',
+        title VARCHAR(255) NOT NULL COMMENT '通知标题',
+        content TEXT NOT NULL COMMENT '通知内容',
+        create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '通知时间',
+        creator VARCHAR(100) NOT NULL COMMENT '通知人',
+        notice_type VARCHAR(50) NOT NULL COMMENT '通知类型',
+        at_user VARCHAR(255) NULL COMMENT '通知@的人',
+        FOREIGN KEY (class_table) REFERENCES class_table(id)
+    ) COMMENT '通知表';
