@@ -76,7 +76,7 @@ CREATE TABLE
         class_order INT NULL COMMENT '个人在班级中的顺序',
         birthday TIMESTAMP NULL COMMENT '出生日期',
         dorm VARCHAR(20) NULL COMMENT '寝室',
-        dorm_head BOOLEAN NOT NULL DEFAULT FALSE COMMENT '寝室长',
+        dorm_head INT NOT NULL DEFAULT 0 COMMENT '寝室长',
         ethnic VARCHAR(200) NULL COMMENT '民族',
         birthplace VARCHAR(200) NULL COMMENT '籍贯',
         politics VARCHAR(50) NULL COMMENT '政治面貌',
@@ -109,7 +109,7 @@ CREATE TABLE
         task_type VARCHAR(255) NOT NULL COMMENT '任务类型',
         class_table INT NOT NULL COMMENT '班级id',
         creator VARCHAR(100) NOT NULL COMMENT '创建人',
-        completed BOOLEAN NOT NULL DEFAULT FALSE COMMENT '是否已经完成',
+        completed INT NOT NULL DEFAULT 0 COMMENT '是否已经完成',
         create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
         FOREIGN KEY (class_table) REFERENCES class_table(id)
     ) COMMENT '班级任务表';
