@@ -1,7 +1,7 @@
--- CREATE DATABASE
---     IF NOT EXISTS classbot DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE
+    IF NOT EXISTS classbot DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
--- USE classbot;
+USE classbot;
 
 CREATE TABLE
     IF NOT EXISTS user (
