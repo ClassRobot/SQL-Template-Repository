@@ -1,7 +1,7 @@
-CREATE DATABASE
-    IF NOT EXISTS classbot DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;
+-- CREATE DATABASE
+--     IF NOT EXISTS classbot DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-USE classbot;
+-- USE classbot;
 
 CREATE TABLE
     IF NOT EXISTS user (
@@ -90,14 +90,14 @@ CREATE TABLE
     IF NOT EXISTS moral_education (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '德育日志id',
         class_table INT NOT NULL COMMENT '班级id',
-        qq BIGINT NOT NULL COMMENT '学生qq',
+        student INT NOT NULL COMMENT '学生id',
         activity_type VARCHAR(50) NULL COMMENT '分数类型',
         description TEXT NOT NULL COMMENT '解释原因原因',
         score INT NOT NULL DEFAULT 0 COMMENT '加减的分数',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '日志时间',
         prove VARCHAR(255) NULL COMMENT "证明文件",
         FOREIGN KEY (class_table) REFERENCES class_table(id),
-        FOREIGN KEY (qq) REFERENCES student(qq)
+        FOREIGN KEY (student) REFERENCES student(id)
     ) COMMENT "德育日志";
 
 -- 班级任务
@@ -120,7 +120,7 @@ CREATE TABLE
     IF NOT EXISTS task_files (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '文件id',
         class_tasks INT NOT NULL COMMENT '收取标题',
-        user_id BIGINT NOT NULL COMMENT '提交人QQ',
+        user_id INT NOT NULL COMMENT '提交人QQ',
         file_md5 VARCHAR(255) NOT NULL COMMENT '文件名称md5',
         push_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
         FOREIGN KEY (class_tasks) REFERENCES class_tasks(id),
@@ -136,7 +136,7 @@ CREATE TABLE
         description TEXT NOT NULL COMMENT '费用所花费在某件事情',
         money DOUBLE NOT NULL COMMENT '花费金额',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
-        user_id VARCHAR(100) NOT NULL COMMENT '记录费用的用户',
+        user_id INT NOT NULL COMMENT '记录费用的用户',
         FOREIGN KEY (class_table) REFERENCES class_table(id),
         FOREIGN KEY (user_id) REFERENCES user(id)
     ) COMMENT '班费表';
@@ -146,7 +146,7 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS student_council (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '学生会id',
-        student_id BIGINT NOT NULL COMMENT '学生qq',
+        student_id INT NOT NULL COMMENT '学生qq',
         department VARCHAR(50) NOT NULL COMMENT '学生会部门',
         position VARCHAR(50) NOT NULL COMMENT '学生会职位',
         FOREIGN KEY (student_id) REFERENCES student(id)
@@ -157,7 +157,7 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS feedback (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '反馈id',
-        user_id BIGINT NOT NULL COMMENT '反馈人qq',
+        user_id INT NOT NULL COMMENT '反馈人qq',
         content TEXT NOT NULL COMMENT '反馈内容',
         image_md5 VARCHAR(255) NULL COMMENT '反馈图片',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '反馈时间',
@@ -173,7 +173,7 @@ CREATE TABLE
         title VARCHAR(255) NOT NULL COMMENT '通知标题',
         content TEXT NOT NULL COMMENT '通知内容',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '通知时间',
-        user_id VARCHAR(100) NOT NULL COMMENT '创建的用户id',
+        user_id INT NOT NULL COMMENT '创建的用户id',
         notice_type VARCHAR(50) NOT NULL COMMENT '通知类型',
         at_user VARCHAR(255) NULL COMMENT '通知@的用户',
         FOREIGN KEY (class_table) REFERENCES class_table(id),
