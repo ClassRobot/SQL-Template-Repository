@@ -9,7 +9,7 @@ CREATE TABLE
         user_type VARCHAR(50) NOT NULL DEFAULT 'anonymous' COMMENT '用户类型[student|teacher|anonymous]',
         qq BIGINT NULL UNIQUE COMMENT '用户qq号',
         wechat VARCHAR(100) NULL UNIQUE COMMENT '微信号',
-        guild_id VARCHAR(100) NULL UNIQUE COMMENT 'QQ频道用户id',
+        guild_id VARCHAR(100) NULL UNIQUE COMMENT 'QQ频道用户id'
     ) COMMENT '用户总表';
 
 -- 教师表
