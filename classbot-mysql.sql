@@ -1,16 +1,31 @@
+-- Active: 1695720643069@@127.0.0.1@3306@classbot
+
 CREATE DATABASE
     IF NOT EXISTS classbot DEFAULT CHARSET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE classbot;
 
+
+-- 用户表
+
 CREATE TABLE
     IF NOT EXISTS user (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '用户id',
-        user_type VARCHAR(50) NOT NULL DEFAULT 'anonymous' COMMENT '用户类型[student|teacher|anonymous]',
-        qq BIGINT NULL UNIQUE COMMENT '用户qq号',
-        wechat VARCHAR(100) NULL UNIQUE COMMENT '微信号',
-        guild_id VARCHAR(100) NULL UNIQUE COMMENT 'QQ频道用户id'
+        create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+        user_type VARCHAR(50) NOT NULL DEFAULT 'anonymous' COMMENT '用户类型[admin|teacher|student|anonymous]'
     ) COMMENT '用户总表';
+
+-- 平台绑定表
+
+CREATE TABLE
+    IF NOT EXISTS bind (
+        id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '绑定id',
+        user_id INT NOT NULL COMMENT '用户id',
+        platform_id INT NOT NULL COMMENT '平台id',
+        account_id VARCHAR(100) NOT NULL COMMENT '平台账号id',
+        create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '绑定时间',
+        FOREIGN KEY (user_id) REFERENCES user(id)
+    ) COMMENT '绑定表';
 
 -- 教师表
 
@@ -18,11 +33,12 @@ CREATE TABLE
     IF NOT EXISTS teacher (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '教师id',
         name VARCHAR(20) NOT NULL COMMENT '教师姓名',
-        creator VARCHAR(100) NOT NULL COMMENT '谁邀请的',
+        user_id INT NOT NULL UNIQUE COMMENT '用户id',
+        creator INT NOT NULL COMMENT '谁邀请的',
         phone BIGINT NOT NULL UNIQUE COMMENT '教师电话',
         email VARCHAR(100) NULL UNIQUE COMMENT '教师邮箱',
-        user_id INT NOT NULL COMMENT '用户id',
-        FOREIGN KEY (user_id) REFERENCES user(id)
+        FOREIGN KEY (user_id) REFERENCES user(id),
+        FOREIGN KEY (creator) REFERENCES user(id)
     ) COMMENT '教师表';
 
 -- 学院表
@@ -31,7 +47,8 @@ CREATE TABLE
     IF NOT EXISTS college (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '学院id',
         college VARCHAR(100) NOT NULL UNIQUE COMMENT '院系名称',
-        creator VARCHAR(100) NOT NULL COMMENT '添加人'
+        creator INT NOT NULL COMMENT '添加人',
+        FOREIGN KEY (creator) REFERENCES user(id)
     ) COMMENT '学院表';
 
 -- 专业表
@@ -41,21 +58,34 @@ CREATE TABLE
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '专业id',
         college INT NOT NULL COMMENT '学院id',
         major VARCHAR(100) NOT NULL UNIQUE COMMENT '专业名称',
-        creator VARCHAR(100) NOT NULL COMMENT '添加人',
-        FOREIGN KEY (college) REFERENCES college(id)
+        creator INT NOT NULL COMMENT '添加人',
+        FOREIGN KEY (college) REFERENCES college(id),
+        FOREIGN KEY (creator) REFERENCES user(id)
     ) COMMENT '专业表';
+
+
+CREATE TABLE
+    IF NOT EXISTS bind_group (
+        id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '绑定群id',
+        group_id BIGINT NOT NULL UNIQUE COMMENT '群号',
+        platform_id VARCHAR(100) NOT NULL UNIQUE COMMENT '平台id',
+        creator INT NOT NULL COMMENT '绑定人',
+        create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '绑定时间',
+        FOREIGN KEY (creator) REFERENCES user(id)
+    ) COMMENT '绑定群表';
 
 -- 班级表
 
 CREATE TABLE
     IF NOT EXISTS class_table (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '班级id',
-        group_id BIGINT NOT NULL UNIQUE COMMENT '班级QQ群',
+        bind_group_id INT NOT NULL UNIQUE COMMENT '绑定的群组',
         name VARCHAR(100) NOT NULL UNIQUE COMMENT '班级群名',
-        teacher INT NOT NULL COMMENT '教师id',
-        major INT NOT NULL COMMENT '专业id',
-        FOREIGN KEY (teacher) REFERENCES teacher(id),
-        FOREIGN KEY (major) REFERENCES major(id)
+        teacher_id INT NOT NULL COMMENT '教师id',
+        major_id INT NOT NULL COMMENT '专业id',
+        FOREIGN KEY (teacher_id) REFERENCES teacher(id),
+        FOREIGN KEY (major_id) REFERENCES major(id),
+        FOREIGN KEY (bind_group_id) REFERENCES bind_group(id)
     ) COMMENT '班级表';
 
 -- 学生表
@@ -63,9 +93,10 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS student (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '学生id',
-        user_id INT NOT NULL COMMENT '用户id',
+        user_id INT NOT NULL UNIQUE COMMENT '用户id',
         name VARCHAR(20) NOT NULL COMMENT '学生姓名',
-        class_table INT NOT NULL COMMENT '学生班级',
+        class_table_id INT NOT NULL COMMENT '学生班级',
+        teacher_id INT NOT NULL COMMENT '教师id',
         dorm_head INT NOT NULL DEFAULT 0 COMMENT '寝室长',
         position VARCHAR(50) NOT NULL DEFAULT '学生' COMMENT '学生',
         dorm VARCHAR(20) NULL COMMENT '寝室',
@@ -80,7 +111,8 @@ CREATE TABLE
         birthplace VARCHAR(200) NULL COMMENT '籍贯',
         politics VARCHAR(50) NULL COMMENT '政治面貌',
         address VARCHAR(200) NULL COMMENT '家庭住址',
-        FOREIGN KEY (class_table) REFERENCES class_table(id),
+        FOREIGN KEY (class_table_id) REFERENCES class_table(id),
+        FOREIGN KEY (teacher_id) REFERENCES teacher(id),
         FOREIGN KEY (user_id) REFERENCES user(id)
     ) COMMENT '学生表';
 
@@ -89,15 +121,15 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS moral_education (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '德育日志id',
-        class_table INT NOT NULL COMMENT '班级id',
-        student INT NOT NULL COMMENT '学生id',
+        class_table_id INT NOT NULL COMMENT '班级id',
+        student_id INT NOT NULL COMMENT '学生id',
         activity_type VARCHAR(50) NULL COMMENT '分数类型',
         description TEXT NOT NULL COMMENT '解释原因原因',
         score INT NOT NULL DEFAULT 0 COMMENT '加减的分数',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '日志时间',
         prove VARCHAR(255) NULL COMMENT "证明文件",
-        FOREIGN KEY (class_table) REFERENCES class_table(id),
-        FOREIGN KEY (student) REFERENCES student(id)
+        FOREIGN KEY (class_table_id) REFERENCES class_table(id),
+        FOREIGN KEY (student_id) REFERENCES student(id)
     ) COMMENT "德育日志";
 
 -- 班级任务
@@ -107,11 +139,12 @@ CREATE TABLE
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '任务id',
         title VARCHAR(255) NOT NULL COMMENT '任务标题',
         task_type VARCHAR(255) NOT NULL COMMENT '任务类型',
-        class_table INT NOT NULL COMMENT '班级id',
-        creator VARCHAR(100) NOT NULL COMMENT '创建人',
+        class_table_id INT NOT NULL COMMENT '班级id',
+        creator INT NOT NULL COMMENT '创建人',
         completed INT NOT NULL DEFAULT 0 COMMENT '是否已经完成',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-        FOREIGN KEY (class_table) REFERENCES class_table(id)
+        FOREIGN KEY (class_table_id) REFERENCES class_table(id),
+        FOREIGN KEY (creator) REFERENCES user(id)
     ) COMMENT '班级任务表';
 
 -- 任务文件
@@ -119,11 +152,11 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS task_files (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '文件id',
-        class_tasks INT NOT NULL COMMENT '收取标题',
-        user_id INT NOT NULL COMMENT '提交人QQ',
+        class_tasks_id INT NOT NULL COMMENT '收取标题',
+        user_id INT NOT NULL COMMENT '提交人',
         file_md5 VARCHAR(255) NOT NULL COMMENT '文件名称md5',
         push_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
-        FOREIGN KEY (class_tasks) REFERENCES class_tasks(id),
+        FOREIGN KEY (class_tasks_id) REFERENCES class_tasks(id),
         FOREIGN KEY (user_id) REFERENCES user(id)
     ) COMMENT '任务文件表';
 
@@ -132,12 +165,12 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS class_funds (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '班费id',
-        class_table INT NOT NULL COMMENT '班级id',
+        class_table_id INT NOT NULL COMMENT '班级id',
         description TEXT NOT NULL COMMENT '费用所花费在某件事情',
         money DOUBLE NOT NULL COMMENT '花费金额',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
         user_id INT NOT NULL COMMENT '记录费用的用户',
-        FOREIGN KEY (class_table) REFERENCES class_table(id),
+        FOREIGN KEY (class_table_id) REFERENCES class_table(id),
         FOREIGN KEY (user_id) REFERENCES user(id)
     ) COMMENT '班费表';
 
@@ -169,13 +202,13 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS notice (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '通知id',
-        class_table INT NOT NULL COMMENT '班级id',
+        class_table_id INT NOT NULL COMMENT '班级id',
         title VARCHAR(255) NOT NULL COMMENT '通知标题',
         content TEXT NOT NULL COMMENT '通知内容',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '通知时间',
         user_id INT NOT NULL COMMENT '创建的用户id',
         notice_type VARCHAR(50) NOT NULL COMMENT '通知类型',
         at_user VARCHAR(255) NULL COMMENT '通知@的用户',
-        FOREIGN KEY (class_table) REFERENCES class_table(id),
+        FOREIGN KEY (class_table_id) REFERENCES class_table(id),
         FOREIGN KEY (user_id) REFERENCES user(id)
     ) COMMENT '通知表';
