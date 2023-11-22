@@ -5,7 +5,6 @@ CREATE DATABASE
 
 USE classbot;
 
-
 -- 用户表
 
 CREATE TABLE
@@ -78,8 +77,8 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS bind_group (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '绑定群id',
-        group_id BIGINT NOT NULL UNIQUE COMMENT '群号',
-        platform_id VARCHAR(100) NOT NULL UNIQUE COMMENT '平台id',
+        group_id VARCHAR(100) NOT NULL COMMENT '群号',
+        platform_id VARCHAR(100) NOT NULL COMMENT '平台id',
         creator INT NOT NULL COMMENT '绑定人',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '绑定时间',
         class_table_id INT NOT NULL COMMENT '绑定的班级',
