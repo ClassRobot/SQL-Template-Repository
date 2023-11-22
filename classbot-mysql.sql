@@ -56,13 +56,24 @@ CREATE TABLE
 CREATE TABLE
     IF NOT EXISTS major (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '专业id',
-        college INT NOT NULL COMMENT '学院id',
+        college_id INT NOT NULL COMMENT '学院id',
         major VARCHAR(100) NOT NULL UNIQUE COMMENT '专业名称',
         creator INT NOT NULL COMMENT '添加人',
-        FOREIGN KEY (college) REFERENCES college(id),
+        FOREIGN KEY (college_id) REFERENCES college(id),
         FOREIGN KEY (creator) REFERENCES user(id)
     ) COMMENT '专业表';
 
+CREATE TABLE
+    IF NOT EXISTS class_table (
+        id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '班级id',
+        name VARCHAR(100) NOT NULL UNIQUE COMMENT '班级群名',
+        teacher_id INT NOT NULL COMMENT '教师id',
+        major_id INT NOT NULL COMMENT '专业id',
+        FOREIGN KEY (teacher_id) REFERENCES teacher(id),
+        FOREIGN KEY (major_id) REFERENCES major(id)
+    ) COMMENT '班级表';
+
+-- 班级表
 
 CREATE TABLE
     IF NOT EXISTS bind_group (
@@ -71,22 +82,10 @@ CREATE TABLE
         platform_id VARCHAR(100) NOT NULL UNIQUE COMMENT '平台id',
         creator INT NOT NULL COMMENT '绑定人',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '绑定时间',
-        FOREIGN KEY (creator) REFERENCES user(id)
+        class_table_id INT NOT NULL COMMENT '绑定的班级',
+        FOREIGN KEY (creator) REFERENCES user(id),
+        FOREIGN KEY (class_table_id) REFERENCES class_table(id)
     ) COMMENT '绑定群表';
-
--- 班级表
-
-CREATE TABLE
-    IF NOT EXISTS class_table (
-        id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '班级id',
-        bind_group_id INT NOT NULL UNIQUE COMMENT '绑定的群组',
-        name VARCHAR(100) NOT NULL UNIQUE COMMENT '班级群名',
-        teacher_id INT NOT NULL COMMENT '教师id',
-        major_id INT NOT NULL COMMENT '专业id',
-        FOREIGN KEY (teacher_id) REFERENCES teacher(id),
-        FOREIGN KEY (major_id) REFERENCES major(id),
-        FOREIGN KEY (bind_group_id) REFERENCES bind_group(id)
-    ) COMMENT '班级表';
 
 -- 学生表
 
