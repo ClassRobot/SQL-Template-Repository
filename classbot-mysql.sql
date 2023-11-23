@@ -23,7 +23,7 @@ CREATE TABLE
         platform_id INT NOT NULL COMMENT '平台id',
         account_id VARCHAR(100) NOT NULL COMMENT '平台账号id',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '绑定时间',
-        FOREIGN KEY (user_id) REFERENCES user(id)
+        FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
     ) COMMENT '绑定表';
 
 -- 教师表
@@ -36,7 +36,7 @@ CREATE TABLE
         creator INT NOT NULL COMMENT '谁邀请的',
         phone BIGINT NOT NULL UNIQUE COMMENT '教师电话',
         email VARCHAR(100) NULL UNIQUE COMMENT '教师邮箱',
-        FOREIGN KEY (user_id) REFERENCES user(id),
+        FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE,
         FOREIGN KEY (creator) REFERENCES user(id)
     ) COMMENT '教师表';
 
@@ -83,7 +83,7 @@ CREATE TABLE
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '绑定时间',
         class_table_id INT NOT NULL COMMENT '绑定的班级',
         FOREIGN KEY (creator) REFERENCES user(id),
-        FOREIGN KEY (class_table_id) REFERENCES class_table(id)
+        FOREIGN KEY (class_table_id) REFERENCES class_table(id) ON DELETE CASCADE
     ) COMMENT '绑定群表';
 
 -- 学生表
@@ -109,9 +109,9 @@ CREATE TABLE
         birthplace VARCHAR(200) NULL COMMENT '籍贯',
         politics VARCHAR(50) NULL COMMENT '政治面貌',
         address VARCHAR(200) NULL COMMENT '家庭住址',
-        FOREIGN KEY (class_table_id) REFERENCES class_table(id),
+        FOREIGN KEY (class_table_id) REFERENCES class_table(id) ON DELETE CASCADE,
         FOREIGN KEY (teacher_id) REFERENCES teacher(id),
-        FOREIGN KEY (user_id) REFERENCES user(id)
+        FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
     ) COMMENT '学生表';
 
 -- 德育日志
@@ -126,8 +126,8 @@ CREATE TABLE
         score INT NOT NULL DEFAULT 0 COMMENT '加减的分数',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '日志时间',
         prove VARCHAR(255) NULL COMMENT "证明文件",
-        FOREIGN KEY (class_table_id) REFERENCES class_table(id),
-        FOREIGN KEY (student_id) REFERENCES student(id)
+        FOREIGN KEY (class_table_id) REFERENCES class_table(id) ON DELETE CASCADE,
+        FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE
     ) COMMENT "德育日志";
 
 -- 班级任务
@@ -141,8 +141,8 @@ CREATE TABLE
         creator INT NOT NULL COMMENT '创建人',
         completed INT NOT NULL DEFAULT 0 COMMENT '是否已经完成',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-        FOREIGN KEY (class_table_id) REFERENCES class_table(id),
-        FOREIGN KEY (creator) REFERENCES user(id)
+        FOREIGN KEY (class_table_id) REFERENCES class_table(id) ON DELETE CASCADE,
+        FOREIGN KEY (creator) REFERENCES user(id) ON DELETE CASCADE
     ) COMMENT '班级任务表';
 
 -- 任务文件
@@ -154,8 +154,8 @@ CREATE TABLE
         user_id INT NOT NULL COMMENT '提交人',
         file_md5 VARCHAR(255) NOT NULL COMMENT '文件名称md5',
         push_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上传时间',
-        FOREIGN KEY (class_tasks_id) REFERENCES class_tasks(id),
-        FOREIGN KEY (user_id) REFERENCES user(id)
+        FOREIGN KEY (class_tasks_id) REFERENCES class_tasks(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
     ) COMMENT '任务文件表';
 
 -- 班费表
@@ -168,8 +168,8 @@ CREATE TABLE
         money DOUBLE NOT NULL COMMENT '花费金额',
         create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '添加时间',
         user_id INT NOT NULL COMMENT '记录费用的用户',
-        FOREIGN KEY (class_table_id) REFERENCES class_table(id),
-        FOREIGN KEY (user_id) REFERENCES user(id)
+        FOREIGN KEY (class_table_id) REFERENCES class_table(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
     ) COMMENT '班费表';
 
 -- 学生会
@@ -180,7 +180,7 @@ CREATE TABLE
         student_id INT NOT NULL COMMENT '学生qq',
         department VARCHAR(50) NOT NULL COMMENT '学生会部门',
         position VARCHAR(50) NOT NULL COMMENT '学生会职位',
-        FOREIGN KEY (student_id) REFERENCES student(id)
+        FOREIGN KEY (student_id) REFERENCES student(id) ON DELETE CASCADE
     ) COMMENT '学生会表';
 
 -- 反馈表
@@ -207,6 +207,6 @@ CREATE TABLE
         user_id INT NOT NULL COMMENT '创建的用户id',
         notice_type VARCHAR(50) NOT NULL COMMENT '通知类型',
         at_user VARCHAR(255) NULL COMMENT '通知@的用户',
-        FOREIGN KEY (class_table_id) REFERENCES class_table(id),
-        FOREIGN KEY (user_id) REFERENCES user(id)
+        FOREIGN KEY (class_table_id) REFERENCES class_table(id) ON DELETE CASCADE,
+        FOREIGN KEY (user_id) REFERENCES user(id) ON DELETE CASCADE
     ) COMMENT '通知表';
