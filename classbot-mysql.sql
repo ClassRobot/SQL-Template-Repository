@@ -40,36 +40,14 @@ CREATE TABLE
         FOREIGN KEY (creator) REFERENCES user(id)
     ) COMMENT '教师表';
 
--- 学院表
-
-CREATE TABLE
-    IF NOT EXISTS college (
-        id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '学院id',
-        college VARCHAR(100) NOT NULL UNIQUE COMMENT '院系名称',
-        creator INT NOT NULL COMMENT '添加人',
-        FOREIGN KEY (creator) REFERENCES user(id)
-    ) COMMENT '学院表';
-
--- 专业表
-
-CREATE TABLE
-    IF NOT EXISTS major (
-        id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '专业id',
-        college_id INT NOT NULL COMMENT '学院id',
-        major VARCHAR(100) NOT NULL UNIQUE COMMENT '专业名称',
-        creator INT NOT NULL COMMENT '添加人',
-        FOREIGN KEY (college_id) REFERENCES college(id),
-        FOREIGN KEY (creator) REFERENCES user(id)
-    ) COMMENT '专业表';
+-- 班级表
 
 CREATE TABLE
     IF NOT EXISTS class_table (
         id INT NOT NULL UNIQUE AUTO_INCREMENT PRIMARY KEY COMMENT '班级id',
         name VARCHAR(100) NOT NULL UNIQUE COMMENT '班级群名',
         teacher_id INT NOT NULL COMMENT '教师id',
-        major_id INT NOT NULL COMMENT '专业id',
-        FOREIGN KEY (teacher_id) REFERENCES teacher(id),
-        FOREIGN KEY (major_id) REFERENCES major(id)
+        FOREIGN KEY (teacher_id) REFERENCES teacher(id)
     ) COMMENT '班级表';
 
 -- 班级表
